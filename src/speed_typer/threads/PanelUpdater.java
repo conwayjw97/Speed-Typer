@@ -1,7 +1,7 @@
 package speed_typer.threads;
 
+import java.util.List;
 import speed_typer.threads.WordMaker;
-import java.util.Vector;
 import speed_typer.graphics.GamePanel;
 import speed_typer.data.Word;
 
@@ -17,7 +17,7 @@ public class PanelUpdater implements Runnable {
     
     private int pos = 0;
     
-    private Vector gameWords;
+    private List<Word> gameWords;
     private GamePanel game;
     private WordMaker wordMaker;
     private Word word;
@@ -35,7 +35,7 @@ public class PanelUpdater implements Runnable {
             
             // Push all words 3 pixels to the right
             for(int i=0; i<gameWords.size(); i++){
-                word = (Word) gameWords.elementAt(i);
+                word = (Word) gameWords.get(i);
                 pos = word.getXPos();
                 word.setXPos(pos + 3);
             }

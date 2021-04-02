@@ -13,7 +13,7 @@ import java.util.*;
 public class Dictionary {
     private int randomInt;
     
-    private Vector words;
+    private List<Word> words;
     private FileReader f;
     private BufferedReader fIN;
     private String s, fileWord;
@@ -23,8 +23,8 @@ public class Dictionary {
     
     public Dictionary(){
         // The constructor opens the Dictionary.txt file and loads all the words
-        // inside of it into the words Vector
-        words = new Vector();
+        // inside of it into the words list
+        words = new ArrayList<>();
         try{
             f = new FileReader("Dictionary.txt");
             fIN = new BufferedReader(f);
@@ -34,7 +34,7 @@ public class Dictionary {
                 fileWord = st.nextToken();
                 fileWord = fileWord.toUpperCase();
                 word = new Word(fileWord);
-                words.addElement(word);
+                words.add(word);
                 s = fIN.readLine();
             }
         }
@@ -44,14 +44,14 @@ public class Dictionary {
         }
     }
     
-    public Vector getWords(){
+    public List<Word> getWords(){
         return words;
     }
     
     public Word getRandomWord(){
-        // Returns a random word object from the words Vector
+        // Returns a random word object from the words list
         randomInt = r.nextInt(words.size());
-        word = (Word) words.elementAt(randomInt);
+        word = words.get(randomInt);
         return word;
     }
 }
