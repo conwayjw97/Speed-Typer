@@ -1,7 +1,6 @@
 package speed_typer.graphics;
 
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -18,8 +17,11 @@ import javax.swing.JPanel;
  * @author Cigol
  */
 public class GamePanel extends JPanel{
-    private static final int MAX_MISSED_SCORE = 3;
     private static final boolean GRAPHICAL_DEBUG_MODE = false;
+    private static final int MAX_MISSED_SCORE = 3;
+    
+    public static final int SCOREBOX_HEIGHT = 50;
+    public static final int INPUT_BOX_HEIGHT = 50;
     
     private int i, score, wordsMissed;
     private char c;
@@ -38,7 +40,6 @@ public class GamePanel extends JPanel{
     
     public boolean stopThreads;
     
-    
     public GamePanel(){
         // Put the constructor in its own method so it can be called again
         // to restart the game
@@ -50,9 +51,9 @@ public class GamePanel extends JPanel{
         // Threads are Initialized on their own too to evidence their 
         // constructors
         dictionary = new Dictionary();
-        wordMaker = new WordMaker(this, dictionary);
-        updater = new PanelUpdater(this, wordMaker);
         wordRemover = new WordRemover(this, wordMaker);
+        wordMaker = new WordMaker(this, wordRemover, dictionary);
+        updater = new PanelUpdater(this, wordMaker);
         
         // Primitive Initialization
         score = wordsMissed = 0;
@@ -94,9 +95,9 @@ public class GamePanel extends JPanel{
         }
     }
     
+    // If the wordInput is equal to any of the gameWords, set that gameWord
+    // to Entered, clear the wordInput, and increment the score
     public void checkWords(){
-        // If the wordInput is equal to any of the gameWords, set that gameWord
-        // to Entered, clear the wordInput, and increment the score
         gameWords = wordMaker.getGameWords();
         for(int i=0; i<gameWords.size(); i++){
                 word = gameWords.get(i);
@@ -109,9 +110,9 @@ public class GamePanel extends JPanel{
         wordMaker.setGameWords(gameWords);
     }
     
-    public void missWord(){
-        // If the user misses a word before it leaves the screen, increment the
-        // missedScore, and if the missedScore reaches the max, stop the game
+    // If the user misses a word before it leaves the screen, increment the
+    // missedScore, and if the missedScore reaches the max, stop the game
+    public void wordMissed(){
         wordsMissed++;
         if (wordsMissed == MAX_MISSED_SCORE){
             stopThreads = true;

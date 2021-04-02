@@ -16,36 +16,47 @@ public class WordRemover implements Runnable {
     private static final int UPDATE_INTERVAL = 100;
     
     private int pos;
-    
     private List<Word> gameWords;
     private GamePanel game;
     private WordMaker wordMaker;
     private Word word;
     
+    public boolean isWorking = false;
+    
     public WordRemover(GamePanel game, WordMaker wordMaker) {
         this.game = game;
         this.wordMaker = wordMaker;
+    }
+    
+    private synchronized void checkForRemovals(){
+        isWorking = true;
+        gameWords.notifyAll();
+        
+        gameWords = wordMaker.getGameWords();
+            
+        // Removes all words that have gone too far right from the gameWords
+        // list, if the word wasn't entered then the missWord method is
+        // called to indicate the user missed that word
+        for(int i=0; i<gameWords.size(); i++){
+            word = gameWords.get(i);
+            pos = word.getXPos();
+            if (pos > game.getPreferredSize().getWidth()){
+                if (word.getEntered() == false){
+                    game.wordMissed();
+                }
+                gameWords.remove(i);
+            }
+        }
+            
+        isWorking = false;
+        gameWords.notifyAll();
     }
 
     @Override
     public void run() {
         // Iterates until the game Panel tells all threads to stop
         while (game.stopThreads == false) {
-            gameWords = wordMaker.getGameWords();
-            
-            // Removes all words that have gone too far right from the gameWords
-            // list, if the word wasn't entered then the missWord method is
-            // called to indicate the user missed that word
-            for(int i=0; i<gameWords.size(); i++){
-                word = gameWords.get(i);
-                pos = word.getXPos();
-                if (pos > game.getPreferredSize().getWidth()){
-                    if (word.getEntered() == false){
-                        game.missWord();
-                    }
-                    gameWords.remove(i);
-                }
-            }
+            checkForRemovals();
             
             // Sleep for a bit and give other threads a chance to run
             try { 

@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import speed_typer.data.Dictionary;
 import speed_typer.graphics.GamePanel;
 import speed_typer.data.Word;
@@ -16,24 +18,26 @@ import speed_typer.data.Word;
  */
 
 // Thread class that takes words from the Dictionary to put into gameWords at
-// 2 second intervals
+// 1 second intervals
 public class WordMaker implements Runnable {
-    private static final int UPDATE_INTERVAL = 2000;
+    private static final int UPDATE_INTERVAL = 1000;
     
     private int randomInt, text1Bottom, text2Bottom, text1Right, text1Top, text2Top, text2Left;
-    private boolean overlapFlag;
     
-    private GamePanel gamePanel;
+    private final GamePanel gamePanel;
+    private final WordRemover wordRemover;
+    private final Dictionary dictionary;
+    private final Font font;
+    private final FontMetrics metrics;
+    private final Random r;
+    
     private List<Word> gameWords;
-    private Dictionary dictionary;
     private Word word, overlapTestWord;
-    private Font font;
-    private FontMetrics metrics;
     private Graphics g;
-    private Random r;
     
-    public WordMaker(GamePanel gamePanel, Dictionary dictionary) {
+    public WordMaker(GamePanel gamePanel, WordRemover wordRemover, Dictionary dictionary) {
         this.gamePanel = gamePanel;
+        this.wordRemover = wordRemover;
         this.dictionary = dictionary;
         gameWords = new ArrayList<>();
         font = new Font("Terminal", Font.PLAIN, 45);
@@ -53,16 +57,23 @@ public class WordMaker implements Runnable {
         this.gameWords = gameWords;
     }
     
-    private boolean checkOverlap(int xPosRight,int yPos){
-        // checkOverlap iterates through all the gameWords and checks whether
-        // a string printed on the given integers would overlap an existing
-        // gameWord string
-        overlapFlag = false;
+    // checkOverlap iterates through all the gameWords and checks whether
+    // a string printed on the given integers would overlap an existing
+    // gameWord string
+    private synchronized boolean checkOverlap(int xPosRight, int yPos){
+        while(wordRemover.isWorking){
+            try {
+                gameWords.wait();
+            } catch (InterruptedException ex) {
+                System.out.println("Thread interrupted exception!!! :S");
+            }
+        }
+        
         text1Bottom = yPos;
         text1Top = yPos-metrics.getHeight();
         text1Right = xPosRight;
         
-        if(gameWords.size()>0){
+        if(gameWords.size() > 0){
             for(int i=0; i<gameWords.size(); i++){
                 overlapTestWord = gameWords.get(i);
                 
@@ -71,15 +82,18 @@ public class WordMaker implements Runnable {
                 text2Left = overlapTestWord.getXPos();
                 
                 if((text1Right > text2Left) && ((text1Bottom > text2Top) || (text1Top < text2Bottom))){
-                    overlapFlag = true;
+                    return true;
                 }
             }
         }
-        return overlapFlag;
+        return false;
     }
     
     @Override
     public void run(){ 
+        int bottomScreenBound = (int) (gamePanel.getPreferredSize().getHeight() - metrics.getHeight()) - GamePanel.INPUT_BOX_HEIGHT;
+        int topScreenBound = GamePanel.SCOREBOX_HEIGHT + metrics.getHeight();
+                    
         // Iterates until the game Panel tells all threads to stop
         while (gamePanel.stopThreads == false) {
             word = dictionary.getRandomWord();
@@ -93,11 +107,10 @@ public class WordMaker implements Runnable {
                 word.setXPos(0 - metrics.stringWidth(word.getWord()));
                 
                 // Generate y positions until a non-overlapping one is found
-                overlapFlag = true;
-                while((overlapFlag == true) && (gameWords.size()>0)){
-                    randomInt = r.nextInt((int) (gamePanel.getPreferredSize().getHeight() - metrics.getHeight()) - 100);
-                    randomInt = randomInt + 50 + metrics.getHeight();
-                    overlapFlag = checkOverlap(word.getXPos() + metrics.stringWidth(word.getWord()), randomInt);
+                boolean overlapping = true;
+                while((overlapping == true) && (gameWords.size()>0)){
+                    randomInt = r.nextInt(bottomScreenBound - topScreenBound) + topScreenBound; // Generates a new word Y position between the scoreboard and input box
+                    overlapping = checkOverlap(word.getXPos() + metrics.stringWidth(word.getWord()), randomInt);
                 }
                 
                 // Set the word up for use in the game

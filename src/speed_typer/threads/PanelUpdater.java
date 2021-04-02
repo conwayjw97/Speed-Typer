@@ -10,10 +10,10 @@ import speed_typer.data.Word;
  * @author Cigol
  */
 
-// Thread class that moves all the words across the screen at 25 millisecond
+// Thread class that moves all the words across the screen at 10 millisecond
 // intervals
 public class PanelUpdater implements Runnable {
-    private static final int UPDATE_INTERVAL = 25;
+    private static final int UPDATE_INTERVAL = 10;
     
     private int pos = 0;
     
