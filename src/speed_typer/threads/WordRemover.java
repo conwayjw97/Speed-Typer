@@ -11,51 +11,43 @@ import speed_typer.data.Word;
  */
 
 // Thread class that removes all words that have moved off the screen from the
-// gameWords list at 100 second intervals
+// gameWords list at 500 millisecond intervals
 public class WordRemover implements Runnable {
-    private static final int UPDATE_INTERVAL = 100;
+    private static final int UPDATE_INTERVAL = 500;
     
     private int pos;
     private List<Word> gameWords;
-    private GamePanel game;
-    private WordMaker wordMaker;
+    private GamePanel gamePanel;
     private Word word;
     
     public boolean isWorking = false;
     
-    public WordRemover(GamePanel game, WordMaker wordMaker) {
-        this.game = game;
-        this.wordMaker = wordMaker;
+    public WordRemover(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
     }
     
     private synchronized void checkForRemovals(){
-        isWorking = true;
-        gameWords.notifyAll();
+        gameWords = gamePanel.getWordMaker().getGameWords();
         
-        gameWords = wordMaker.getGameWords();
-            
         // Removes all words that have gone too far right from the gameWords
         // list, if the word wasn't entered then the missWord method is
         // called to indicate the user missed that word
         for(int i=0; i<gameWords.size(); i++){
             word = gameWords.get(i);
             pos = word.getXPos();
-            if (pos > game.getPreferredSize().getWidth()){
+            if (pos > gamePanel.getPreferredSize().getWidth()){
                 if (word.getEntered() == false){
-                    game.wordMissed();
+                    gamePanel.wordMissed();
                 }
                 gameWords.remove(i);
             }
         }
-            
-        isWorking = false;
-        gameWords.notifyAll();
     }
 
     @Override
     public void run() {
         // Iterates until the game Panel tells all threads to stop
-        while (game.stopThreads == false) {
+        while (gamePanel.stopThreads == false) {
             checkForRemovals();
             
             // Sleep for a bit and give other threads a chance to run

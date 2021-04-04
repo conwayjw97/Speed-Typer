@@ -3,6 +3,7 @@ package speed_typer.threads;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,7 +26,6 @@ public class WordMaker implements Runnable {
     private int randomInt, text1Bottom, text2Bottom, text1Right, text1Top, text2Top, text2Left;
     
     private final GamePanel gamePanel;
-    private final WordRemover wordRemover;
     private final Dictionary dictionary;
     private final Font font;
     private final FontMetrics metrics;
@@ -35,9 +35,8 @@ public class WordMaker implements Runnable {
     private Word word, overlapTestWord;
     private Graphics g;
     
-    public WordMaker(GamePanel gamePanel, WordRemover wordRemover, Dictionary dictionary) {
+    public WordMaker(GamePanel gamePanel, Dictionary dictionary) {
         this.gamePanel = gamePanel;
-        this.wordRemover = wordRemover;
         this.dictionary = dictionary;
         gameWords = new ArrayList<>();
         font = new Font("Terminal", Font.PLAIN, 45);
@@ -61,12 +60,10 @@ public class WordMaker implements Runnable {
     // a string printed on the given integers would overlap an existing
     // gameWord string
     private synchronized boolean checkOverlap(int xPosRight, int yPos){
-        while(wordRemover.isWorking){
+        while(gamePanel.getWordRemoverThread().getState() != State.TIMED_WAITING){
             try {
-                gameWords.wait();
-            } catch (InterruptedException ex) {
-                System.out.println("Thread interrupted exception!!! :S");
-            }
+                Thread.sleep(100);
+            } catch (InterruptedException ignore) {}
         }
         
         text1Bottom = yPos;

@@ -51,8 +51,9 @@ public class GamePanel extends JPanel{
         // Threads are Initialized on their own too to evidence their 
         // constructors
         dictionary = new Dictionary();
-        wordRemover = new WordRemover(this, wordMaker);
-        wordMaker = new WordMaker(this, wordRemover, dictionary);
+        wordMaker = new WordMaker(this, dictionary);
+        wordRemover = new WordRemover(this);
+        
         updater = new PanelUpdater(this, wordMaker);
         
         // Primitive Initialization
@@ -69,6 +70,22 @@ public class GamePanel extends JPanel{
         wordMakerThread.start();
         updaterThread.start();
         wordRemoverThread.start();
+    }
+    
+    public WordMaker getWordMaker(){
+        return wordMaker;
+    }
+    
+    public Thread getWordMakerThread(){
+        return wordMakerThread;
+    }
+    
+    public WordRemover getWordRemover(){
+        return wordRemover;
+    }
+    
+    public Thread getWordRemoverThread(){
+        return wordRemoverThread;
     }
     
     public void charEntered(char c){
