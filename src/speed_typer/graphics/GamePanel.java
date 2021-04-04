@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.List;
+import java.util.logging.Logger;
 import speed_typer.data.Dictionary;
 import speed_typer.data.Word;
 import speed_typer.threads.WordRemover;
@@ -17,6 +18,7 @@ import javax.swing.JPanel;
  * @author Cigol
  */
 public class GamePanel extends JPanel{
+    private static Logger LOG = Logger.getLogger(GamePanel.class.getName());
     private static final boolean GRAPHICAL_DEBUG_MODE = false;
     private static final int MAX_MISSED_SCORE = 3;
     

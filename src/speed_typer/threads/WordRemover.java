@@ -1,6 +1,8 @@
 package speed_typer.threads;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import speed_typer.threads.WordMaker;
 import speed_typer.graphics.GamePanel;
 import speed_typer.data.Word;
@@ -13,6 +15,7 @@ import speed_typer.data.Word;
 // Thread class that removes all words that have moved off the screen from the
 // gameWords list at 500 millisecond intervals
 public class WordRemover implements Runnable {
+    private static Logger LOG = Logger.getLogger(WordRemover.class.getName());
     private static final int UPDATE_INTERVAL = 500;
     
     private int pos;
@@ -50,10 +53,12 @@ public class WordRemover implements Runnable {
         while (gamePanel.stopThreads == false) {
             checkForRemovals();
             
-            // Sleep for a bit and give other threads a chance to run
-            try { 
+            try {
+                // Sleep for a bit and give other threads a chance to run
                 Thread.sleep(UPDATE_INTERVAL);  // milliseconds
-            } catch (InterruptedException ignore) {}
+            } catch (InterruptedException e) {
+                LOG.log(Level.SEVERE, "Interrupted Thread Exception", e);
+            }
         }
     }
 }

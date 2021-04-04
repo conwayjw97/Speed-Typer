@@ -21,6 +21,7 @@ import speed_typer.data.Word;
 // Thread class that takes words from the Dictionary to put into gameWords at
 // 1 second intervals
 public class WordMaker implements Runnable {
+    private static Logger LOG = Logger.getLogger(WordMaker.class.getName());
     private static final int UPDATE_INTERVAL = 1000;
     
     private int randomInt, text1Bottom, text2Bottom, text1Right, text1Top, text2Top, text2Left;
@@ -63,7 +64,9 @@ public class WordMaker implements Runnable {
         while(gamePanel.getWordRemoverThread().getState() != State.TIMED_WAITING){
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException ignore) {}
+            } catch (InterruptedException e) {
+                LOG.log(Level.SEVERE, "Interrupted Thread Exception", e);
+            }
         }
         
         text1Bottom = yPos;
@@ -119,7 +122,9 @@ public class WordMaker implements Runnable {
             // Sleep for a bit and give other threads a chance to run
             try { 
                 Thread.sleep(UPDATE_INTERVAL);  // milliseconds
-            } catch (InterruptedException ignore) {}
+            } catch (InterruptedException e) {
+                LOG.log(Level.SEVERE, "Interrupted Thread Exception", e);
+            }
         }
     }
 }

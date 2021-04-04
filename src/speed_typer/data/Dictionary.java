@@ -3,6 +3,8 @@ package speed_typer.data;
 import speed_typer.data.Word;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -11,8 +13,9 @@ import java.util.*;
 
 // The class for the Dictionary that contains all the words available to the game
 public class Dictionary {
-    private int randomInt;
+    private static Logger LOG = Logger.getLogger(Dictionary.class.getName());
     
+    private int randomInt;
     private List<Word> words;
     private FileReader f;
     private BufferedReader fIN;
@@ -39,7 +42,7 @@ public class Dictionary {
             }
         }
         catch(IOException e){
-            System.out.println("Error reading from file");
+            LOG.log(Level.SEVERE, "Interrupted Thread Exception", e);
             System.exit(0);
         }
     }

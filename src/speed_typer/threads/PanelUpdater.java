@@ -1,6 +1,8 @@
 package speed_typer.threads;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import speed_typer.threads.WordMaker;
 import speed_typer.graphics.GamePanel;
 import speed_typer.data.Word;
@@ -13,6 +15,7 @@ import speed_typer.data.Word;
 // Thread class that moves all the words across the screen at 10 millisecond
 // intervals
 public class PanelUpdater implements Runnable {
+    private static Logger LOG = Logger.getLogger(PanelUpdater.class.getName());
     private static final int UPDATE_INTERVAL = 10;
     
     private int pos = 0;
@@ -46,7 +49,9 @@ public class PanelUpdater implements Runnable {
             // Sleep for a bit and give other threads a chance to run
             try { 
                 Thread.sleep(UPDATE_INTERVAL);  // milliseconds
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+                LOG.log(Level.SEVERE, "Interrupted Thread Exception", e);
+            }
         }
     }
 }

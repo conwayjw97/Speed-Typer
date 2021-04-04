@@ -4,13 +4,16 @@ import speed_typer.graphics.GamePanel;
 import speed_typer.listeners.GameKeyListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 import javax.swing.*;
+import speed_typer.threads.WordRemover;
 
 /**
  *
  * @author Cigol
  */
 public class GameFrame extends JFrame{
+    private static Logger LOG = Logger.getLogger(GameFrame.class.getName());
     private static final int X_SIZE = 1400, Y_SIZE = 800;
     
     private GamePanel gamePanel;
