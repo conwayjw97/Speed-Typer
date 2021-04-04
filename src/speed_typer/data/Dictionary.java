@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 // The class for the Dictionary that contains all the words available to the game
 public class Dictionary {
-    private static Logger LOG = Logger.getLogger(Dictionary.class.getName());
+    private static final Logger LOG = Logger.getLogger(Dictionary.class.getName());
     
     private int randomInt;
     private List<Word> words;

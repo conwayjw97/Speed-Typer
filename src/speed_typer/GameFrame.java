@@ -13,7 +13,7 @@ import speed_typer.threads.WordRemover;
  * @author Cigol
  */
 public class GameFrame extends JFrame{
-    private static Logger LOG = Logger.getLogger(GameFrame.class.getName());
+    private static final Logger LOG = Logger.getLogger(GameFrame.class.getName());
     private static final int X_SIZE = 1400, Y_SIZE = 800;
     
     private GamePanel gamePanel;
@@ -38,9 +38,9 @@ public class GameFrame extends JFrame{
         // Transparent 16 x 16 pixel cursor image.
         cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         // Create a new blank cursor.
-        blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
+//        blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
         // Set the blank cursor to the JFrame.
-        gamePanel.setCursor(blankCursor);
+//        gamePanel.setCursor(blankCursor);
         gamePanel.setFocusable(true);
         gamePanel.requestFocusInWindow();
         

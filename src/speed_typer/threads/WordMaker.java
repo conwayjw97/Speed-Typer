@@ -2,7 +2,6 @@ package speed_typer.threads;
 
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,7 @@ import speed_typer.data.Word;
 // Thread class that takes words from the Dictionary to put into gameWords at
 // 1 second intervals
 public class WordMaker implements Runnable {
-    private static Logger LOG = Logger.getLogger(WordMaker.class.getName());
+    private static final Logger LOG = Logger.getLogger(WordMaker.class.getName());
     private static final int UPDATE_INTERVAL = 1000;
     
     private int randomInt, text1Bottom, text2Bottom, text1Right, text1Top, text2Top, text2Left;
@@ -34,7 +33,6 @@ public class WordMaker implements Runnable {
     
     private List<Word> gameWords;
     private Word word, overlapTestWord;
-    private Graphics g;
     
     public WordMaker(GamePanel gamePanel, Dictionary dictionary) {
         this.gamePanel = gamePanel;

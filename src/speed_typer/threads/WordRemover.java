@@ -15,7 +15,7 @@ import speed_typer.data.Word;
 // Thread class that removes all words that have moved off the screen from the
 // gameWords list at 500 millisecond intervals
 public class WordRemover implements Runnable {
-    private static Logger LOG = Logger.getLogger(WordRemover.class.getName());
+    private static final Logger LOG = Logger.getLogger(WordRemover.class.getName());
     private static final int UPDATE_INTERVAL = 500;
     
     private int pos;

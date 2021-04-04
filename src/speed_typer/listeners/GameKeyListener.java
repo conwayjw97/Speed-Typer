@@ -31,16 +31,23 @@ public class GameKeyListener implements KeyListener{
     
     @Override
     public void keyReleased(KeyEvent e) {
-        // If the key released is a backspace, call charDeleted
-        // This was done in keyReleased because it didn't work in keyTyped
-        if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE){
-            game.charDeleted();
+        // These were done in keyReleased because it didn't work in keyTyped
+        switch(e.getKeyCode()){
+            // If the key released is a backspace, call charDeleted
+            case KeyEvent.VK_BACK_SPACE:
+                game.charDeleted();
+                break;
+            // If the key released is delete, call wordDeleted
+            case KeyEvent.VK_DELETE:
+                game.wordDeleted();
+                break;
+            default:
+                break;
         }
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // Unsupported
     }
     
 }

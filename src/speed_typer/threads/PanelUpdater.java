@@ -15,7 +15,7 @@ import speed_typer.data.Word;
 // Thread class that moves all the words across the screen at 10 millisecond
 // intervals
 public class PanelUpdater implements Runnable {
-    private static Logger LOG = Logger.getLogger(PanelUpdater.class.getName());
+    private static final Logger LOG = Logger.getLogger(PanelUpdater.class.getName());
     private static final int UPDATE_INTERVAL = 10;
     
     private int pos = 0;
