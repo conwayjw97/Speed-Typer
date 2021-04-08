@@ -26,6 +26,10 @@ public class GameKeyListener implements KeyListener{
         if(Character.isLetter(e.getKeyChar())){
             game.charEntered(e.getKeyChar());
         }
+        // If the key typed is a digit, call numEntered
+        else if(Character.isDigit(e.getKeyChar())){
+            game.numEntered(Character.getNumericValue(e.getKeyChar()));
+        }
     }
     
     @Override

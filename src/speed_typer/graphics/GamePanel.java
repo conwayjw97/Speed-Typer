@@ -98,6 +98,14 @@ public class GamePanel extends JPanel{
         }
     }
     
+     public void numEntered(int n){
+        // Set difficulty if applicable
+        if(!gameStarted && n > 0 && n < 4){
+            difficulty = n;
+        }
+    }
+
+    
     public void charDeleted(){
         // If there's anything in the wordInput, delete the last letter
         if(wordInput.length() > 0){
