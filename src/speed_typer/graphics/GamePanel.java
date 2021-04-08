@@ -25,7 +25,7 @@ public class GamePanel extends JPanel{
     public static final int SCOREBOX_HEIGHT = 50;
     public static final int INPUT_BOX_HEIGHT = 50;
     
-    private int score, wordsMissed;
+    private int score, wordsMissed, difficulty;
     private boolean gameStarted;
     
     private String wordInput;
@@ -43,23 +43,28 @@ public class GamePanel extends JPanel{
     
     public GamePanel(){
         // Object Initialization 
+        dictionary = new Dictionary();
+        panelPainter = new PanelPainter(wordMaker);
+        
+        // Primitive Initialization
+        gameStarted = false;
+        difficulty = 1;
+    }
+    
+    private void startGame(){
+        gameStarted = true;
+        
+        // Object Initialization 
         // Threads are Initialized on their own too to evidence their 
         // constructors
-        dictionary = new Dictionary();
         wordMaker = new WordMaker(this, dictionary);
         wordRemover = new WordRemover(this);
         updater = new PanelUpdater(this, wordMaker);
-        panelPainter = new PanelPainter(wordMaker);
         
         // Primitive Initialization
         score = wordsMissed = 0;
         wordInput = "";
         stopThreads = false;
-        gameStarted = false;
-    }
-    
-    private void startGame(){
-        gameStarted = true;
         
         // Thread Initialization
         wordMakerThread = new Thread(wordMaker);
@@ -143,7 +148,7 @@ public class GamePanel extends JPanel{
         panelPainter.setDimensions(getWidth(), getHeight());
         
         if(!gameStarted){
-            panelPainter.paintGameIntroScreen(g);
+            panelPainter.paintGameIntroScreen(g, difficulty);
         }
         else{
             panelPainter.paintScoreBox(g, score, wordsMissed);

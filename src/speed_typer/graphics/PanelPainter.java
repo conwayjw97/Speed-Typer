@@ -102,17 +102,42 @@ public class PanelPainter {
         paintCenteredText(g, font, "PRESS R TO RESTART", (height / 2)+100);
     }
     
-    public void paintGameIntroScreen(Graphics g){
+    public void paintGameIntroScreen(Graphics g, int difficulty){
         // Draw GameOver screen, if the user has lost
         g.setColor(Color.white);
         g.fillRect(0, 0, width, height);
         g.setColor(Color.black);
 
         font = new Font("Terminal", Font.PLAIN, 128);
-        paintCenteredText(g, font, "SPEED TYPER", (height / 2)-20);
+        paintCenteredText(g, font, "SPEED TYPER", (height / 2)-120);
 
         font = new Font("Terminal", Font.PLAIN, 64);
-        paintCenteredText(g, font, "Press ENTER to Start", (height / 2)+40);
+        paintCenteredText(g, font, "Select Difficulty", (height / 2));
+        
+        font = new Font("Terminal", Font.PLAIN, 48);
+        g.setFont(font); 
+        int x = (width / 2) - 110;
+        
+        if(difficulty == 1){
+            g.setColor(Color.red);
+        }
+        g.drawString("1 - Easy", x, (height / 2)+60);
+        g.setColor(Color.black);
+        
+        if(difficulty == 2){
+            g.setColor(Color.red);
+        }
+        g.drawString("2 - Medium", x, (height / 2)+110);
+        g.setColor(Color.black);
+        
+        if(difficulty == 3){
+            g.setColor(Color.red);
+        }
+        g.drawString("3 - Hard", x, (height / 2)+160);
+        g.setColor(Color.black);
+        
+        font = new Font("Terminal", Font.PLAIN, 64);
+        paintCenteredText(g, font, "Press ENTER to Start", (height / 2)+240);
     }
     
     private void paintCenteredText(Graphics g, Font font, String text, int y){
