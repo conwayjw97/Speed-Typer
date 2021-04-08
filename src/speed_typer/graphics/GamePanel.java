@@ -19,9 +19,9 @@ import javax.swing.JPanel;
  */
 public class GamePanel extends JPanel{
     private static final Logger LOG = Logger.getLogger(GamePanel.class.getName());
-    private static final boolean GRAPHICAL_DEBUG_MODE = false;
-    private static final int MAX_MISSED_SCORE = 3;
     
+    public static final boolean GRAPHICAL_DEBUG_MODE = false;
+    public static final int MAX_MISSED_SCORE = 3;
     public static final int SCOREBOX_HEIGHT = 50;
     public static final int INPUT_BOX_HEIGHT = 50;
     
@@ -35,8 +35,7 @@ public class GamePanel extends JPanel{
     private WordMaker wordMaker;
     private PanelUpdater updater;
     private WordRemover wordRemover;
-    private Font font;
-    private FontMetrics metrics;
+    private PanelPainter panelPainter;
     
     private Thread updaterThread, wordMakerThread, wordRemoverThread;
     
@@ -55,8 +54,8 @@ public class GamePanel extends JPanel{
         dictionary = new Dictionary();
         wordMaker = new WordMaker(this, dictionary);
         wordRemover = new WordRemover(this);
-        
         updater = new PanelUpdater(this, wordMaker);
+        panelPainter = new PanelPainter(wordMaker, getWidth(), getHeight());
         
         // Primitive Initialization
         score = wordsMissed = 0;
@@ -73,23 +72,7 @@ public class GamePanel extends JPanel{
         updaterThread.start();
         wordRemoverThread.start();
     }
-    
-    public WordMaker getWordMaker(){
-        return wordMaker;
-    }
-    
-    public Thread getWordMakerThread(){
-        return wordMakerThread;
-    }
-    
-    public WordRemover getWordRemover(){
-        return wordRemover;
-    }
-    
-    public Thread getWordRemoverThread(){
-        return wordRemoverThread;
-    }
-    
+
     public void charEntered(char c){
         // If the user hasn't lost yet, add character to wordInput
         if (wordsMissed != MAX_MISSED_SCORE){
@@ -148,93 +131,38 @@ public class GamePanel extends JPanel{
     }
     
     @Override
-    public void paintComponent (Graphics g){
+    public void paintComponent(Graphics g){
         super.paintComponent(g);
         this.setBackground(Color.black);
         
-        // Draw scorebox
-        font = new Font("Terminal", Font.ITALIC, 45);
-        g.setFont(font);
-        g.setColor(Color.white);
-        g.fillRect(0, 45, getWidth(), 5);
-        g.drawString("SCORE: " + score + "   WORDS MISSED: " + wordsMissed + "/3", 5, 37);
+        panelPainter.paintScoreBox(g, score, wordsMissed);
         
-        // [DEBUGGING, DELETE IF NECESSARY] Paint the height of the screen on 
-        // the panel
         if(GRAPHICAL_DEBUG_MODE){
-            for(i=0; i<getHeight(); i+=50){
-                g.drawString(String.valueOf(i), getWidth()-100, i);
-                g.drawLine(getWidth()-100, i, getWidth(), i);
-            }
+            panelPainter.paintScreenHeight(g);
         }
         
-        // Draw userinput and input box
-        font = new Font("Terminal", Font.ITALIC, 45);
-        g.setFont(font);
-        g.setColor(Color.white);
-        g.fillRect(0, getHeight()-50, getWidth(), 5);
-        g.drawString(wordInput, 5, getHeight()-5);
+        panelPainter.paintInputBox(g, wordInput);
         
-        // Draw the gameWords
-        font = new Font("Terminal", Font.PLAIN, 45);
-        g.setFont(font);
-        gameWords = wordMaker.getGameWords();
-        for(int i=0; i<gameWords.size(); i++){
-            font = new Font("Terminal", Font.PLAIN, 45);
-            g.setFont(font);
-            word = gameWords.get(i);
-            if(word.getEntered() == true){
-                g.setColor(Color.darkGray);
-            }
-            else if(word.getEntered() == false){
-                g.setColor(Color.white);
-            }
-            g.drawString(word.getWord(), word.getXPos(), word.getYPos());
-            
-            // [DEBUGGING, DELETE IF NECESSARY] Paint the coordinates of the word
-            // below it
-            if(GRAPHICAL_DEBUG_MODE){
-                font = new Font("Terminal", Font.PLAIN, 12);
-                g.setFont(font);
-                g.drawString(String.valueOf(word.getXPos()), word.getXPos(), word.getYPos()+10);
-                g.drawString(String.valueOf(word.getYPos()), word.getXPos()+30, word.getYPos()+10);
-            }
-        }
+        panelPainter.paintGameWords(g);
         
-        // Draw GameOver screen, if the user has lost
         if(wordsMissed == MAX_MISSED_SCORE){
-            g.setColor(Color.white);
-            g.fillRect(0, 50, getWidth(), getHeight()-50-45);
-            
-            g.setColor(Color.black);
-            font = new Font("Terminal", Font.PLAIN, 128);
-            String text = "GAME OVER";
-            
-            metrics = g.getFontMetrics(font);
-            int x = (getWidth() - metrics.stringWidth(text)) / 2;
-            int y = (getHeight() / 2);
-            
-            g.setFont(font); 
-            g.drawString(text, x, y-20);
-            
-            font = new Font("Terminal", Font.PLAIN, 64);
-            text = "FINAL SCORE: " + Integer.toString(score);
-            
-            metrics = g.getFontMetrics(font);
-            x = (getWidth() - metrics.stringWidth(text)) / 2;
-            y = (getHeight() / 2);
-            
-            g.setFont(font); 
-            g.drawString(text, x, y+40);
-            
-            text = "PRESS R TO RESTART";
-            
-            metrics = g.getFontMetrics(font);
-            x = (getWidth() - metrics.stringWidth(text)) / 2;
-            y = (getHeight() / 2);
-            
-            g.setFont(font); 
-            g.drawString(text, x, y+100);
+            panelPainter.paintGameOverScreen(g, score);
         }
+    }
+    
+    public WordMaker getWordMaker(){
+        return wordMaker;
+    }
+    
+    public Thread getWordMakerThread(){
+        return wordMakerThread;
+    }
+    
+    public WordRemover getWordRemover(){
+        return wordRemover;
+    }
+    
+    public Thread getWordRemoverThread(){
+        return wordRemoverThread;
     }
 }

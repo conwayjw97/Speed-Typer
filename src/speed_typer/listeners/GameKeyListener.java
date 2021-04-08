@@ -15,7 +15,6 @@ import speed_typer.graphics.GamePanel;
  */
 public class GameKeyListener implements KeyListener{
     private GamePanel game;
-    private char c;
     
     public GameKeyListener(GamePanel game){
         this.game = game;
