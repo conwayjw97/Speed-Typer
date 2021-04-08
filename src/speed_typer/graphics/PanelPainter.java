@@ -24,10 +24,18 @@ public class PanelPainter {
     private int width;
     private int height;
     
-    PanelPainter(WordMaker wordMaker, int width, int height){
+    PanelPainter(WordMaker wordMaker){
         this.wordMaker = wordMaker;
-        this.width = width;
-        this.height = height;
+        
+        width = 0;
+        height = 0;
+    }
+    
+    public void setDimensions(int width, int height){
+        if(this.width==0 && this.height==0){
+            this.width = width;
+            this.height = height;
+        }
     }
     
     public void paintScoreBox(Graphics g, int score, int wordsMissed){
@@ -84,30 +92,34 @@ public class PanelPainter {
         // Draw GameOver screen, if the user has lost
         g.setColor(Color.white);
         g.fillRect(0, 50, width, height-50-45);
-
         g.setColor(Color.black);
+
         font = new Font("Terminal", Font.PLAIN, 128);
-        String text = "GAME OVER";
-
-        metrics = g.getFontMetrics(font);
-        int x = (width - metrics.stringWidth(text)) / 2;
-        int y = (height / 2);
-
-        g.setFont(font); 
-        g.drawString(text, x, y-20);
+        paintCenteredText(g, font, "FINAL SCORE: " + Integer.toString(score), (height / 2)-20);
 
         font = new Font("Terminal", Font.PLAIN, 64);
-        text = "FINAL SCORE: " + Integer.toString(score);
+        paintCenteredText(g, font, "FINAL SCORE: " + Integer.toString(score), (height / 2)+40);
+        paintCenteredText(g, font, "PRESS R TO RESTART", (height / 2)+100);
+    }
+    
+    public void paintGameIntroScreen(Graphics g){
+        // Draw GameOver screen, if the user has lost
+        g.setColor(Color.white);
+        g.fillRect(0, 0, width, height);
+        g.setColor(Color.black);
 
+        font = new Font("Terminal", Font.PLAIN, 128);
+        paintCenteredText(g, font, "SPEED TYPER", (height / 2)-20);
+
+        font = new Font("Terminal", Font.PLAIN, 64);
+        paintCenteredText(g, font, "Press ENTER to Start", (height / 2)+40);
+    }
+    
+    private void paintCenteredText(Graphics g, Font font, String text, int y){
         metrics = g.getFontMetrics(font);
-        x = (width - metrics.stringWidth(text)) / 2;
-        y = (height / 2);
+        int x = (width - metrics.stringWidth(text)) / 2;
 
         g.setFont(font); 
-        g.drawString(text, x, y+40);
-
-        text = "PRESS R TO RESTART";
-
-        g.drawString(text, x, y+100);
+        g.drawString(text, x, y);
     }
 }

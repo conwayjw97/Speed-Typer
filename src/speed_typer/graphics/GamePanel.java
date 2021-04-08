@@ -25,8 +25,8 @@ public class GamePanel extends JPanel{
     public static final int SCOREBOX_HEIGHT = 50;
     public static final int INPUT_BOX_HEIGHT = 50;
     
-    private int i, score, wordsMissed;
-    private char c;
+    private int score, wordsMissed;
+    private boolean gameStarted;
     
     private String wordInput;
     private List<Word> gameWords;
@@ -42,12 +42,6 @@ public class GamePanel extends JPanel{
     public boolean stopThreads;
     
     public GamePanel(){
-        // Put the constructor in its own method so it can be called again
-        // to restart the game
-        startGame();
-    }
-    
-    private void startGame(){
         // Object Initialization 
         // Threads are Initialized on their own too to evidence their 
         // constructors
@@ -55,12 +49,17 @@ public class GamePanel extends JPanel{
         wordMaker = new WordMaker(this, dictionary);
         wordRemover = new WordRemover(this);
         updater = new PanelUpdater(this, wordMaker);
-        panelPainter = new PanelPainter(wordMaker, getWidth(), getHeight());
+        panelPainter = new PanelPainter(wordMaker);
         
         // Primitive Initialization
         score = wordsMissed = 0;
         wordInput = "";
         stopThreads = false;
+        gameStarted = false;
+    }
+    
+    private void startGame(){
+        gameStarted = true;
         
         // Thread Initialization
         wordMakerThread = new Thread(wordMaker);
@@ -72,10 +71,16 @@ public class GamePanel extends JPanel{
         updaterThread.start();
         wordRemoverThread.start();
     }
+    
+    public void enterPressed(){
+        if(!gameStarted){
+            startGame();
+        }
+    }
 
     public void charEntered(char c){
         // If the user hasn't lost yet, add character to wordInput
-        if (wordsMissed != MAX_MISSED_SCORE){
+        if(wordsMissed != MAX_MISSED_SCORE){
             wordInput += c;
             wordInput = wordInput.toUpperCase();
             checkWords();
@@ -83,7 +88,7 @@ public class GamePanel extends JPanel{
         }
         
         // If the user has already lost and presses 'r', restart the game
-        else if ((wordsMissed == MAX_MISSED_SCORE)&&(Character.toLowerCase(c) == 'r')){
+        else if((wordsMissed == MAX_MISSED_SCORE)&&(Character.toLowerCase(c) == 'r')){
             startGame();
         }
     }
@@ -110,13 +115,13 @@ public class GamePanel extends JPanel{
     public void checkWords(){
         gameWords = wordMaker.getGameWords();
         for(int i=0; i<gameWords.size(); i++){
-                word = gameWords.get(i);
-                if ((word.getWord()).equals(wordInput)){
-                    word.setEntered(true);
-                    wordInput = "";
-                    score ++;
-                }
+            word = gameWords.get(i);
+            if ((word.getWord()).equals(wordInput)){
+                word.setEntered(true);
+                wordInput = "";
+                score++;
             }
+        }
         wordMaker.setGameWords(gameWords);
     }
     
@@ -135,18 +140,25 @@ public class GamePanel extends JPanel{
         super.paintComponent(g);
         this.setBackground(Color.black);
         
-        panelPainter.paintScoreBox(g, score, wordsMissed);
+        panelPainter.setDimensions(getWidth(), getHeight());
         
-        if(GRAPHICAL_DEBUG_MODE){
-            panelPainter.paintScreenHeight(g);
+        if(!gameStarted){
+            panelPainter.paintGameIntroScreen(g);
         }
-        
-        panelPainter.paintInputBox(g, wordInput);
-        
-        panelPainter.paintGameWords(g);
-        
-        if(wordsMissed == MAX_MISSED_SCORE){
-            panelPainter.paintGameOverScreen(g, score);
+        else{
+            panelPainter.paintScoreBox(g, score, wordsMissed);
+
+            if(GRAPHICAL_DEBUG_MODE){
+                panelPainter.paintScreenHeight(g);
+            }
+
+            panelPainter.paintInputBox(g, wordInput);
+
+            panelPainter.paintGameWords(g);
+
+            if(wordsMissed == MAX_MISSED_SCORE){
+                panelPainter.paintGameOverScreen(g, score);
+            }
         }
     }
     

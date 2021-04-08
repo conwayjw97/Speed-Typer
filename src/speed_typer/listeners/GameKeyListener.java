@@ -32,6 +32,9 @@ public class GameKeyListener implements KeyListener{
     public void keyReleased(KeyEvent e) {
         // These were done in keyReleased because it didn't work in keyTyped
         switch(e.getKeyCode()){
+            case KeyEvent.VK_ENTER:
+                game.enterPressed();
+                break;
             // If the key released is a backspace, call charDeleted
             case KeyEvent.VK_BACK_SPACE:
                 game.charDeleted();
