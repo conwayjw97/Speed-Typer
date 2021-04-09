@@ -93,7 +93,7 @@ public class PanelPainter {
         g.setColor(Color.black);
 
         Font font = new Font("Terminal", Font.PLAIN, 128);
-        paintCenteredText(g, font, "FINAL SCORE: " + Integer.toString(score), (height / 2)-20);
+        paintCenteredText(g, font, "GAME OVER", (height / 2)-20);
 
         font = new Font("Terminal", Font.PLAIN, 64);
         paintCenteredText(g, font, "FINAL SCORE: " + Integer.toString(score), (height / 2)+40);
