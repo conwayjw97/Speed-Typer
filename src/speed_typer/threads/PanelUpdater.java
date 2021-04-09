@@ -3,7 +3,6 @@ package speed_typer.threads;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import speed_typer.threads.WordMaker;
 import speed_typer.graphics.GamePanel;
 import speed_typer.data.Word;
 
@@ -16,18 +15,30 @@ import speed_typer.data.Word;
 // intervals
 public class PanelUpdater implements Runnable {
     private static final Logger LOG = Logger.getLogger(PanelUpdater.class.getName());
-    private static final int UPDATE_INTERVAL = 10;
     
+    private final GamePanel game;
+    private final WordMaker wordMaker;
+    
+    private int updateInterval;
     private int pos = 0;
-    
     private List<Word> gameWords;
-    private GamePanel game;
-    private WordMaker wordMaker;
     private Word word;
     
     public PanelUpdater(GamePanel game, WordMaker wordMaker) {
         this.game = game;
         this.wordMaker = wordMaker;
+        
+        switch(game.getDifficulty()){
+            case 1:
+                updateInterval = 12;
+                break;
+            case 2:
+                updateInterval = 9;
+                break;
+            case 3:
+                updateInterval = 6;
+                break;
+        }
     }
     
     @Override
@@ -48,7 +59,7 @@ public class PanelUpdater implements Runnable {
             
             // Sleep for a bit and give other threads a chance to run
             try { 
-                Thread.sleep(UPDATE_INTERVAL);  // milliseconds
+                Thread.sleep(updateInterval);  // milliseconds
             } catch (InterruptedException e) {
                 LOG.log(Level.SEVERE, "Interrupted Thread Exception", e);
             }

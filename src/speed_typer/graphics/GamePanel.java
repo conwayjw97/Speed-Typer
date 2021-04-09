@@ -190,4 +190,8 @@ public class GamePanel extends JPanel{
     public Thread getWordRemoverThread(){
         return wordRemoverThread;
     }
+    
+    public int getDifficulty(){
+        return difficulty;
+    }
 }
