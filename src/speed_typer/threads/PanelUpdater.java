@@ -20,9 +20,6 @@ public class PanelUpdater implements Runnable {
     private final WordMaker wordMaker;
     
     private int updateInterval;
-    private int pos = 0;
-    private List<Word> gameWords;
-    private Word word;
     
     public PanelUpdater(GamePanel game, WordMaker wordMaker) {
         this.game = game;
@@ -38,6 +35,8 @@ public class PanelUpdater implements Runnable {
             case 3:
                 updateInterval = 6;
                 break;
+            default:
+                break;
         }
     }
     
@@ -45,12 +44,12 @@ public class PanelUpdater implements Runnable {
     public void run(){
         // Iterates until the game Panel tells all threads to stop
         while (game.stopThreads == false) {
-            gameWords = wordMaker.getGameWords();
+            List<Word> gameWords = wordMaker.getGameWords();
             
             // Push all words 3 pixels to the right
             for(int i=0; i<gameWords.size(); i++){
-                word = (Word) gameWords.get(i);
-                pos = word.getXPos();
+                Word word = (Word) gameWords.get(i);
+                int pos = word.getXPos();
                 word.setXPos(pos + 3);
             }
             

@@ -18,9 +18,7 @@ import speed_typer.threads.WordMaker;
  * @author cigol
  */
 public class PanelPainter {
-    private WordMaker wordMaker;
-    private Font font;
-    private FontMetrics metrics;
+    private final WordMaker wordMaker;
     private int width;
     private int height;
     
@@ -40,7 +38,7 @@ public class PanelPainter {
     
     public void paintScoreBox(Graphics g, int score, int wordsMissed){
         // Draw scorebox
-        font = new Font("Terminal", Font.ITALIC, 45);
+        Font font = new Font("Terminal", Font.ITALIC, 45);
         g.setFont(font);
         g.setColor(Color.white);
         g.fillRect(0, 45, width, 5);
@@ -56,7 +54,7 @@ public class PanelPainter {
     
     public void paintInputBox(Graphics g, String wordInput){
         // Draw userinput and input box
-        font = new Font("Terminal", Font.ITALIC, 45);
+        Font font = new Font("Terminal", Font.ITALIC, 45);
         g.setColor(Color.white);
         g.fillRect(0, height-50, width, 5);
         g.drawString(wordInput, 5, height-5);
@@ -64,7 +62,7 @@ public class PanelPainter {
     
     public void paintGameWords(Graphics g){
         // Draw the gameWords
-        font = new Font("Terminal", Font.PLAIN, 45);
+        Font font = new Font("Terminal", Font.PLAIN, 45);
         g.setFont(font);
         List<Word> gameWords = wordMaker.getGameWords();
         for(int i=0; i<gameWords.size(); i++){
@@ -94,7 +92,7 @@ public class PanelPainter {
         g.fillRect(0, 50, width, height-50-45);
         g.setColor(Color.black);
 
-        font = new Font("Terminal", Font.PLAIN, 128);
+        Font font = new Font("Terminal", Font.PLAIN, 128);
         paintCenteredText(g, font, "FINAL SCORE: " + Integer.toString(score), (height / 2)-20);
 
         font = new Font("Terminal", Font.PLAIN, 64);
@@ -108,11 +106,11 @@ public class PanelPainter {
         g.fillRect(0, 0, width, height);
         g.setColor(Color.black);
 
-        font = new Font("Terminal", Font.PLAIN, 128);
-        paintCenteredText(g, font, "SPEED TYPER", (height / 2)-120);
+        Font font = new Font("Terminal", Font.PLAIN, 128);
+        paintCenteredText(g, font, "SPEED TYPER", (height / 2)-140);
 
         font = new Font("Terminal", Font.PLAIN, 64);
-        paintCenteredText(g, font, "Select Difficulty", (height / 2));
+        paintCenteredText(g, font, "Select Difficulty", (height / 2)-20);
         
         font = new Font("Terminal", Font.PLAIN, 48);
         g.setFont(font); 
@@ -121,19 +119,19 @@ public class PanelPainter {
         if(difficulty == 1){
             g.setColor(Color.red);
         }
-        g.drawString("1 - Easy", x, (height / 2)+60);
+        g.drawString("1 - Easy", x, (height / 2)+40);
         g.setColor(Color.black);
         
         if(difficulty == 2){
             g.setColor(Color.red);
         }
-        g.drawString("2 - Medium", x, (height / 2)+110);
+        g.drawString("2 - Medium", x, (height / 2)+90);
         g.setColor(Color.black);
         
         if(difficulty == 3){
             g.setColor(Color.red);
         }
-        g.drawString("3 - Hard", x, (height / 2)+160);
+        g.drawString("3 - Hard", x, (height / 2)+140);
         g.setColor(Color.black);
         
         font = new Font("Terminal", Font.PLAIN, 64);
@@ -141,7 +139,7 @@ public class PanelPainter {
     }
     
     private void paintCenteredText(Graphics g, Font font, String text, int y){
-        metrics = g.getFontMetrics(font);
+        FontMetrics metrics = g.getFontMetrics(font);
         int x = (width - metrics.stringWidth(text)) / 2;
 
         g.setFont(font); 
