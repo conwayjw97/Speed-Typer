@@ -44,6 +44,7 @@ public class GamePanel extends JPanel{
     public GamePanel(){
         // Object Initialization 
         dictionary = new Dictionary();
+        wordMaker = new WordMaker(this, dictionary);
         panelPainter = new PanelPainter(wordMaker);
         
         // Primitive Initialization
@@ -57,7 +58,6 @@ public class GamePanel extends JPanel{
         // Object Initialization 
         // Threads are Initialized on their own too to evidence their 
         // constructors
-        wordMaker = new WordMaker(this, dictionary);
         wordRemover = new WordRemover(this);
         updater = new PanelUpdater(this, wordMaker);
         
@@ -102,10 +102,10 @@ public class GamePanel extends JPanel{
         // Set difficulty if applicable
         if(!gameStarted && n > 0 && n < 4){
             difficulty = n;
+            repaint();
         }
     }
 
-    
     public void charDeleted(){
         // If there's anything in the wordInput, delete the last letter
         if(wordInput.length() > 0){
