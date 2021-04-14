@@ -44,7 +44,6 @@ public class GamePanel extends JPanel{
     public GamePanel(){
         // Object Initialization 
         dictionary = new Dictionary();
-        wordMaker = new WordMaker(this, dictionary);
         panelPainter = new PanelPainter(wordMaker);
         
         // Primitive Initialization
@@ -58,7 +57,9 @@ public class GamePanel extends JPanel{
         // Object Initialization 
         // Threads are Initialized on their own too to evidence their 
         // constructors
+        wordMaker = new WordMaker(this, dictionary);
         wordRemover = new WordRemover(this);
+        panelPainter = new PanelPainter(wordMaker);
         updater = new PanelUpdater(this, wordMaker);
         
         // Primitive Initialization
